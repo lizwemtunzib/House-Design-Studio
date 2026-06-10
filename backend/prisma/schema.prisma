@@ -1,0 +1,368 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ───────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum ProjectStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  ARCHIVED
+}
+
+enum BuildingSystemType {
+  BRICK_MASONRY
+  CONCRETE_BLOCK
+  INTERLOCKING_BLOCK
+  MAKIGA_SOIL_BLOCK
+  TIMBER_FRAME
+  LIGHT_STEEL_FRAME
+  GLASS_CURTAIN_WALL
+  PRECAST_PANEL
+  SIP_PANEL
+}
+
+enum RoofType {
+  HIP
+  GABLE
+  FLAT
+  MONO_PITCH
+  MANSARD
+  BUTTERFLY
+}
+
+enum FloorSystemType {
+  CONCRETE_SLAB
+  TIMBER_JOISTS
+  STEEL_DECK
+  PRECAST_HOLLOWCORE
+}
+
+enum FoundationType {
+  STRIP
+  PAD
+  RAFT
+  PILE
+}
+
+enum DesignStyle {
+  MODERN
+  CONTEMPORARY
+  LUXURY
+  MINIMALIST
+  AFRICAN_VERNACULAR
+  MEDITERRANEAN
+  TIMBER_HEAVY
+  GLASS_HEAVY
+  PREFAB_MODULAR
+}
+
+enum DesignStatus {
+  PENDING
+  GENERATING
+  READY
+  FAILED
+}
+
+enum ExportFormat {
+  PDF
+  EXCEL
+}
+
+// ─── USERS & AUTH ─────────────────────────────────────────────────────────────
+
+model User {
+  id            String           @id @default(uuid())
+  email         String           @unique
+  name          String
+  passwordHash  String
+  role          UserRole         @default(USER)
+  avatarUrl     String?
+  preferredLang String           @default("en")
+  currency      String           @default("USD")
+  country       String?
+
+  subscription  Subscription?
+  projects      Project[]
+  exports       Export[]
+
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([email])
+}
+
+model Subscription {
+  id               String           @id @default(uuid())
+  userId           String           @unique
+  user             User             @relation(fields: [userId], references: [id])
+  tier             SubscriptionTier @default(FREE)
+  stripeCustomerId String?
+  stripePriceId    String?
+  stripeSubId      String?
+  currentPeriodEnd DateTime?
+  cancelAtPeriodEnd Boolean         @default(false)
+  projectsUsed     Int              @default(0)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+// ─── PROJECTS ─────────────────────────────────────────────────────────────────
+
+model Project {
+  id          String        @id @default(uuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  name        String
+  description String?
+  status      ProjectStatus @default(DRAFT)
+  country     String?
+  city        String?
+  plotSize    Float?        // m²
+  currency    String        @default("USD")
+
+  houseDesign  HouseDesign?
+  exports      Export[]
+  cityRules    CityRules?   @relation(fields: [cityRulesId], references: [id])
+  cityRulesId  String?
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+// ─── HOUSE DESIGN (AI OUTPUT) ─────────────────────────────────────────────────
+
+model HouseDesign {
+  id           String       @id @default(uuid())
+  projectId    String       @unique
+  project      Project      @relation(fields: [projectId], references: [id])
+
+  userInput    String       // Original text description
+  uploadedImageUrl String?  // Reference image user uploaded
+  style        DesignStyle  @default(MODERN)
+  status       DesignStatus @default(PENDING)
+
+  // AI-generated visual outputs (URLs to stored images)
+  exteriorRenders  String[]  @default([])
+  interiorConcepts String[]  @default([])
+  landscapingRender String?
+  floorPlanImage   String?
+
+  // AI-generated structured model (stored as JSON)
+  houseModel   HouseModel?
+  designNotes  String?      // AI design rationale
+
+  iterations   DesignIteration[]
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model DesignIteration {
+  id           String      @id @default(uuid())
+  designId     String
+  design       HouseDesign @relation(fields: [designId], references: [id])
+  iteration    Int
+  userPrompt   String      // "make windows bigger", "add garage"
+  aiResponse   String?
+  renders      String[]    @default([])
+  createdAt    DateTime    @default(now())
+}
+
+// ─── HOUSE MODEL (STRUCTURED ENGINEERING DATA) ───────────────────────────────
+
+model HouseModel {
+  id                String         @id @default(uuid())
+  designId          String         @unique
+  design            HouseDesign    @relation(fields: [designId], references: [id])
+
+  // Overall dimensions
+  totalFloorArea    Float          // m² (all floors combined)
+  groundFloorArea   Float          // m²
+  numberOfFloors    Int            @default(1)
+  floorToFloorHeight Float         @default(2.8) // metres
+  perimeterLength   Float          // m (ground floor external perimeter)
+
+  // Systems
+  wallSystem        BuildingSystemType
+  roofType          RoofType       @default(GABLE)
+  roofPitchDegrees  Float          @default(25)
+  floorSystem       FloorSystemType @default(CONCRETE_SLAB)
+  foundationType    FoundationType  @default(STRIP)
+
+  // Wall dimensions
+  externalWallThickness Float      @default(0.23) // metres
+  internalWallThickness Float      @default(0.11)
+
+  // Floor plans (one per floor)
+  floors            Floor[]
+
+  // Global openings summary
+  totalDoors        Int            @default(0)
+  totalWindows      Int            @default(0)
+  totalGlassArea    Float          @default(0) // m²
+
+  // External works
+  hasDriveway       Boolean        @default(false)
+  drivewaySqm       Float          @default(0)
+  hasPool           Boolean        @default(false)
+  poolSqm           Float          @default(0)
+  hasGarden         Boolean        @default(false)
+  gardenSqm         Float          @default(0)
+  hasFencing        Boolean        @default(false)
+  fencingLinearM    Float          @default(0)
+
+  // BOQ and cost (generated after model is set)
+  boq               BOQ?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+model Floor {
+  id            String      @id @default(uuid())
+  modelId       String
+  model         HouseModel  @relation(fields: [modelId], references: [id])
+  floorNumber   Int         // 0 = ground, 1 = first, etc.
+  floorArea     Float       // m²
+  rooms         Room[]
+  createdAt     DateTime    @default(now())
+}
+
+model Room {
+  id          String    @id @default(uuid())
+  floorId     String
+  floor       Floor     @relation(fields: [floorId], references: [id])
+  name        String    // "Master Bedroom", "Kitchen", etc.
+  width       Float     // metres
+  length      Float     // metres
+  area        Float     // width * length
+  xPosition   Float     @default(0) // for floor plan editor
+  yPosition   Float     @default(0)
+  doors       Int       @default(1)
+  windows     Int       @default(1)
+  isExternal  Boolean   @default(false) // room touches external wall
+  createdAt   DateTime  @default(now())
+}
+
+// ─── BOQ ──────────────────────────────────────────────────────────────────────
+
+model BOQ {
+  id           String     @id @default(uuid())
+  modelId      String     @unique
+  model        HouseModel @relation(fields: [modelId], references: [id])
+  version      Int        @default(1)
+  items        BOQItem[]
+  costEstimate CostEstimate?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model BOQItem {
+  id          String   @id @default(uuid())
+  boqId       String
+  boq         BOQ      @relation(fields: [boqId], references: [id])
+  category    String   // "EXCAVATION" | "CONCRETE" | "WALLING" | ...
+  subCategory String?  // "FOUNDATION" | "SLAB" | ...
+  description String
+  unit        String   // "m³" | "m²" | "m" | "nr" | "kg" | "bag"
+  quantity    Float
+  notes       String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// ─── COST ESTIMATE ────────────────────────────────────────────────────────────
+
+model CostEstimate {
+  id             String     @id @default(uuid())
+  boqId          String     @unique
+  boq            BOQ        @relation(fields: [boqId], references: [id])
+  currency       String     @default("USD")
+  priceInputs    Json       // { [boqItemId]: { unitPrice, labour } }
+  totalMaterials Float      @default(0)
+  totalLabour    Float      @default(0)
+  totalCost      Float      @default(0)
+  costPerSqm     Float      @default(0)
+  breakdown      Json       // { category: { materials, labour, total } }
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+// ─── BUILDING SYSTEMS (seed data) ────────────────────────────────────────────
+
+model BuildingSystemSpec {
+  id              String             @id @default(uuid())
+  systemType      BuildingSystemType @unique
+  name            String
+  description     String
+  regions         String[]           // regions where commonly used
+  unitRate        Float?             // typical cost per m² for reference
+  wasteFactor     Float              @default(0.05)
+  specifications  Json               // detailed specs for BOQ calculations
+  prosAndCons     Json               @default("{}")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+// ─── CITY RULES ───────────────────────────────────────────────────────────────
+
+model CityRules {
+  id                 String    @id @default(uuid())
+  country            String
+  city               String
+  maxBuildingHeight  Float?    // metres
+  maxCoverageRatio   Float?    // 0.0 - 1.0 (e.g., 0.6 = 60%)
+  minFrontSetback    Float?    // metres
+  minRearSetback     Float?    // metres
+  minSideSetback     Float?    // metres
+  minPlotSize        Float?    // m²
+  maxFloors          Int?
+  parkingRequired    Boolean   @default(false)
+  parkingSpaces      Int?
+  zoningNotes        String?
+  sourceUrl          String?
+  lastVerified       DateTime?
+  isVerified         Boolean   @default(false)
+
+  projects           Project[]
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@unique([country, city])
+  @@index([country])
+}
+
+// ─── EXPORTS ──────────────────────────────────────────────────────────────────
+
+model Export {
+  id         String       @id @default(uuid())
+  projectId  String
+  project    Project      @relation(fields: [projectId], references: [id])
+  userId     String
+  user       User         @relation(fields: [userId], references: [id])
+  format     ExportFormat
+  fileUrl    String
+  fileName   String
+  fileSizeKb Int          @default(0)
+  createdAt  DateTime     @default(now())
+}

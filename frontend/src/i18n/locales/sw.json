@@ -1,0 +1,30 @@
+{
+  "app": { "name": "House Design Studio", "tagline": "Buni nyumba ya ndoto yako kwa AI" },
+  "nav": { "home": "Nyumbani", "dashboard": "Mabuni Yangu", "pricing": "Bei", "login": "Ingia", "logout": "Toka", "getStarted": "Anza Sasa" },
+  "steps": {
+    "1": { "title": "Elezea Nyumba Yako", "subtitle": "Tuambie unachotaka" },
+    "2": { "title": "Muundo wa AI", "subtitle": "Mawazo ya kisanaa yaliyoundwa" },
+    "3": { "title": "Muundo wa Jengo", "subtitle": "Mfumo wa ujenzi na mpangilio" },
+    "4": { "title": "BOQ", "subtitle": "Orodha ya Vifaa" },
+    "5": { "title": "Gharama", "subtitle": "Kadiria bajeti yako" }
+  },
+  "intent": {
+    "description": "Elezea nyumba ya ndoto yako",
+    "descriptionPlaceholder": "mfano: Nyumba ya kisasa yenye vyumba 4 vya kulala, dari tambarare, vyumba vikubwa na bwawa la kuogelea...",
+    "bedrooms": "Vyumba vya Kulala", "bathrooms": "Vyumba vya Kuogea", "garages": "Gereji", "floors": "Ghorofa",
+    "targetArea": "Eneo Lengwa (m²)", "plotSize": "Ukubwa wa Kiwanja (m²)",
+    "style": "Mtindo wa Usanifu", "wallSystem": "Mfumo wa Kuta",
+    "country": "Nchi", "city": "Mji",
+    "extras": "Ziada", "pool": "Bwawa la Kuogelea", "garden": "Bustani", "driveway": "Njia ya Gari", "fencing": "Uzio"
+  },
+  "boq": { "title": "Orodha ya Vifaa", "subtitle": "Imehesabiwa kutoka muundo", "disclaimer": "⚠ Nambari hizi zimehesabiwa kutoka muundo wa nyumba. Kwa madhumuni ya bajeti tu." },
+  "cost": { "title": "Makadirio ya Gharama", "unitPrice": "Bei ya Kitengo", "totalCost": "Jumla ya Gharama", "costPerSqm": "Gharama kwa m²" },
+  "export": { "title": "Hamisha na Pakua", "pdfReport": "Ripoti Kamili (PDF)", "excelWorkbook": "Kitabu cha Excel" },
+  "common": { "next": "Inayofuata", "back": "Rudi", "save": "Hifadhi", "loading": "Inapakia...", "generating": "Inatengeneza..." },
+  "errors": { "required": "Sehemu hii inahitajika", "serverError": "Hitilafu imetokea. Jaribu tena." },
+  "pricing": {
+    "free": { "name": "Bure", "price": "0", "features": ["Mradi 1", "BOQ ya msingi", "Muundo wa AI", "Usafirishaji PDF"] },
+    "pro": { "name": "Pro", "price": "9.99", "features": ["Miradi isiyo na mipaka", "BOQ kamili + injini ya gharama", "Usafirishaji Excel + PDF", "Mifumo yote ya ujenzi"] },
+    "enterprise": { "name": "Biashara", "price": "29.99", "features": ["Kila kitu katika Pro", "Ufikiaji wa API", "Nafasi ya watumiaji wengi"] }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "app": { "name": "House Design Studio", "tagline": "Concevez votre maison de rêve avec l'IA" },
+  "nav": { "home": "Accueil", "dashboard": "Mes Designs", "pricing": "Tarifs", "login": "Connexion", "logout": "Déconnexion", "getStarted": "Commencer" },
+  "steps": {
+    "1": { "title": "Décrivez votre maison", "subtitle": "Dites-nous ce que vous voulez" },
+    "2": { "title": "Design IA", "subtitle": "Concepts visuels générés" },
+    "3": { "title": "Structure", "subtitle": "Système constructif et plan" },
+    "4": { "title": "Devis quantitatif", "subtitle": "Bordereau des quantités" },
+    "5": { "title": "Coût", "subtitle": "Estimez votre budget" }
+  },
+  "intent": {
+    "description": "Décrivez votre maison de rêve",
+    "descriptionPlaceholder": "ex. Maison moderne 4 chambres avec toit plat, grand séjour ouvert, grandes fenêtres et piscine...",
+    "bedrooms": "Chambres", "bathrooms": "Salles de bain", "garages": "Garages", "floors": "Étages",
+    "targetArea": "Surface cible (m²)", "plotSize": "Surface du terrain (m²)",
+    "style": "Style architectural", "wallSystem": "Système de murs",
+    "country": "Pays", "city": "Ville",
+    "extras": "Extras", "pool": "Piscine", "garden": "Jardin", "driveway": "Allée", "fencing": "Clôture",
+    "uploadImage": "Télécharger une image d'inspiration", "additional": "Exigences supplémentaires"
+  },
+  "boq": { "title": "Bordereau des Quantités", "subtitle": "Calculé à partir du modèle de conception", "disclaimer": "⚠ Ces quantités sont calculées à partir du modèle. À des fins budgétaires uniquement." },
+  "cost": { "title": "Estimation des coûts", "unitPrice": "Prix unitaire", "totalCost": "Coût total du projet", "costPerSqm": "Coût par m²" },
+  "export": { "title": "Export et téléchargement", "pdfReport": "Rapport complet (PDF)", "excelWorkbook": "Classeur Excel" },
+  "common": { "next": "Suivant", "back": "Retour", "save": "Enregistrer", "loading": "Chargement...", "generating": "Génération en cours..." },
+  "errors": { "required": "Ce champ est obligatoire", "serverError": "Une erreur s'est produite. Veuillez réessayer." },
+  "pricing": {
+    "free": { "name": "Gratuit", "price": "0", "features": ["1 projet", "Devis de base", "Design IA", "Export PDF"] },
+    "pro": { "name": "Pro", "price": "9.99", "features": ["Projets illimités", "Devis complet + moteur de coût", "Export Excel + PDF", "Tous systèmes constructifs"] },
+    "enterprise": { "name": "Entreprise", "price": "29.99", "features": ["Tout dans Pro", "Accès API", "Espace multi-utilisateurs"] }
+  }
+}

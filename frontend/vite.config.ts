@@ -1,0 +1,58 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      manifest: {
+        name: 'House Design Studio',
+        short_name: 'HDS',
+        description: 'AI-powered house design, BOQ & cost estimation',
+        theme_color: '#1a365d',
+        background_color: '#ffffff',
+        display: 'standalone',
+        orientation: 'portrait-primary',
+        scope: '/',
+        start_url: '/',
+        icons: [
+          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+        ],
+        shortcuts: [
+          { name: 'New Design', short_name: 'New', description: 'Start a new house design', url: '/wizard', icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }] },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: { cacheName: 'google-fonts-cache', expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 } },
+          },
+          {
+            urlPattern: /\/api\/(building-systems|design-styles)/,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'api-static-cache', expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 } },
+          },
+        ],
+      },
+    }),
+  ],
+  resolve: {
+    alias: { '@': path.resolve(__dirname, './src') },
+  },
+  server: {
+    port: 5173,
+    proxy: {
+      '/api': { target: 'http://localhost:3001', changeOrigin: true },
+      '/uploads': { target: 'http://localhost:3001', changeOrigin: true },
+      '/exports': { target: 'http://localhost:3001', changeOrigin: true },
+    },
+  },
+});
