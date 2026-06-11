@@ -19,7 +19,7 @@ export function createApp() {
 
   // CORS
   app.use(cors({
-    origin: [config.frontendUrl, 'http://localhost:5173', 'http://localhost:4173'],
+    origin: ['https://frontendenv-production.up.railway.app', config.frontendUrl, 'http://localhost:5173', 'http://localhost:4173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
