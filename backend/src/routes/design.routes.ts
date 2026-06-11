@@ -6,6 +6,7 @@ import path from 'path';
 import { v4 as uuid } from 'uuid';
 import { authenticate, AuthRequest } from '../middleware/auth';
 import { AppError } from '../middleware/errorHandler';
+import { DesignStyle } from '../shared/types/house-model.types';
 import { visualAI } from '../modules/ai/visual-ai.service';
 import { planningAI } from '../modules/ai/planning-ai.service';
 import { boqEngine } from '../modules/boq/boq-engine';
@@ -32,7 +33,7 @@ const intentSchema = z.object({
   floors: z.number().int().min(1).max(5).optional(),
   targetArea: z.number().positive().optional(),
   plotSize: z.number().positive().optional(),
-  style: z.string().optional(),
+  style: z.enum(['MODERN', 'CONTEMPORARY', 'LUXURY', 'MINIMALIST', 'AFRICAN_VERNACULAR', 'MEDITERRANEAN', 'TIMBER_HEAVY', 'GLASS_HEAVY', 'PREFAB_MODULAR']).optional(),
   wallSystem: z.string().optional(),
   hasPool: z.boolean().default(false),
   hasGarden: z.boolean().default(true),

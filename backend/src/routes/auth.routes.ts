@@ -74,9 +74,13 @@ authRouter.get('/me', authenticate, async (req: AuthRequest, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { id: req.user!.id },
     include: { subscription: true },
-    omit: { passwordHash: true } as any,
   });
-  res.json(user);
+  if (user) {
+    const { passwordHash, ...safeUser } = user;
+    res.json(safeUser);
+  } else {
+    res.json(null);
+  }
 });
 
 authRouter.patch('/me', authenticate, async (req: AuthRequest, res: Response) => {
@@ -84,13 +88,13 @@ authRouter.patch('/me', authenticate, async (req: AuthRequest, res: Response) =>
   const updated = await prisma.user.update({
     where: { id: req.user!.id },
     data: { name, country, preferredLang, currency },
-    omit: { passwordHash: true } as any,
   });
-  res.json(updated);
+  const { passwordHash, ...safeUser } = updated;
+  res.json(safeUser);
 });
 
 function signToken(userId: string, email: string, role: string, subscriptionTier: string) {
   return jwt.sign({ userId, email, role, subscriptionTier }, config.jwt.secret, {
-    expiresIn: config.jwt.expiresIn,
+    expiresIn: config.jwt.expiresIn as string & {},
   });
 }
