@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { ZodError } from 'zod';
 import { config } from '../config';
 
 export class AppError extends Error {
@@ -22,6 +23,13 @@ export function errorHandler(
     return res.status(err.statusCode).json({
       error: err.message,
       code: err.code,
+    });
+  }
+
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      error: err.errors[0]?.message ?? 'Invalid request',
+      issues: err.errors,
     });
   }
 

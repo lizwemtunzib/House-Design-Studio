@@ -4,9 +4,13 @@ import path from 'path';
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 export const config = {
-  port: parseInt(process.env.PORT || '3001', 10),
+  port: parseInt(process.env.PORT || '8080', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+  adminEmails: (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean),
 
   database: {
     url: process.env.DATABASE_URL || '',

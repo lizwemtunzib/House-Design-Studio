@@ -3,7 +3,7 @@ import { config } from './config';
 
 const app = createApp();
 
-app.listen(config.port, () => {
+app.listen(config.port, '0.0.0.0', () => {
   console.log(`
 ╔══════════════════════════════════════════════╗
 ║       House Design Studio API                ║

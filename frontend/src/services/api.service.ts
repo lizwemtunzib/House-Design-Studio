@@ -19,7 +19,9 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err: AxiosError) => {
-    if (err.response?.status === 401) {
+    const requestUrl = err.config?.url ?? '';
+    const isAuthRequest = requestUrl.includes('/auth/login') || requestUrl.includes('/auth/register');
+    if (err.response?.status === 401 && !isAuthRequest) {
       useUserStore.getState().logout();
       window.location.href = '/auth';
     }

@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
+const backendTarget = process.env.VITE_API_PROXY_TARGET ?? `http://localhost:${process.env.PORT ?? '8080'}`;
+
 export default defineConfig({
   plugins: [
     react(),
@@ -50,9 +52,9 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': { target: 'http://localhost:3001', changeOrigin: true },
-      '/uploads': { target: 'http://localhost:3001', changeOrigin: true },
-      '/exports': { target: 'http://localhost:3001', changeOrigin: true },
+      '/api': { target: backendTarget, changeOrigin: true },
+      '/uploads': { target: backendTarget, changeOrigin: true },
+      '/exports': { target: backendTarget, changeOrigin: true },
     },
   },
 });

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Eye, EyeOff } from 'lucide-react';
 import { useUserStore } from '../stores/user.store';
 import { authApi } from '../services/api.service';
-import { toast } from '../components/ui/Toaster';
 
 export default function Auth() {
   const { t } = useTranslation();
@@ -13,6 +13,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', password: '', country: '' });
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +69,17 @@ export default function Auth() {
             </div>
             <div>
               <label className="label">Password</label>
-              <input className="input-field" type="password" placeholder="••••••••" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required minLength={8} />
+              <div className="relative">
+                <input className="input-field pr-11" type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required minLength={8} />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-gray-500 transition-colors hover:text-brand-700"
+                  onClick={() => setShowPassword((value) => !value)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+                </button>
+              </div>
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <button type="submit" className="btn-primary w-full" disabled={loading}>
