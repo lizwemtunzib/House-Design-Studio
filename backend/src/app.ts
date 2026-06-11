@@ -24,6 +24,7 @@ export function createApp() {
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   }));
+  console.log(`CORS configured for origin: ${config.frontendUrl}`);
 
   // Compression
   app.use(compression());
