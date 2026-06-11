@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.svg', 'app-icon.svg', 'mask-icon.svg'],
       manifest: {
         name: 'House Design Studio',
         short_name: 'HDS',
@@ -22,11 +22,11 @@ export default defineConfig({
         scope: '/',
         start_url: '/',
         icons: [
-          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          { src: 'app-icon.svg', sizes: 'any', type: 'image/svg+xml' },
+          { src: 'app-icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' },
         ],
         shortcuts: [
-          { name: 'New Design', short_name: 'New', description: 'Start a new house design', url: '/wizard', icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }] },
+          { name: 'New Design', short_name: 'New', description: 'Start a new house design', url: '/wizard', icons: [{ src: 'app-icon.svg', sizes: 'any', type: 'image/svg+xml' }] },
         ],
       },
       workbox: {

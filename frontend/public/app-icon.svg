@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">House Design Studio</title>
+  <rect width="512" height="512" rx="96" fill="#1a365d"/>
+  <path d="M112 246 256 124l144 122v142a28 28 0 0 1-28 28H140a28 28 0 0 1-28-28V246Z" fill="#f8fafc"/>
+  <path d="M176 416V292h160v124" fill="#38bdf8"/>
+  <path d="M144 246 256 152l112 94" fill="none" stroke="#fbbf24" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M216 416v-84h80v84" fill="#1a365d"/>
+</svg>
