@@ -5,6 +5,21 @@ import { useDesignStore } from '../../stores/design.store';
 import { boqApi } from '../../services/api.service';
 import { BOQTable } from '../../components/BOQTable';
 
+interface BOQItem {
+  category: string;
+  description: string;
+  subCategory?: string;
+  [key: string]: unknown;
+}
+
+interface BOQResponse {
+  items?: BOQItem[];
+  summary?: { totalItems?: number };
+  wallSystemUsed?: string;
+  warnings?: string[];
+  assumptions?: string[];
+}
+
 const CATEGORY_ICONS: Record<string, string> = {
   PRELIMINARY: '📋', EXCAVATION: '⛏', SUBSTRUCTURE: '🏗',
   SUPERSTRUCTURE: '🧱', ROOFING: '🏠', WINDOWS_DOORS: '🪟',
@@ -19,11 +34,11 @@ export default function Step4BOQ() {
   const [filterCategory, setFilterCategory] = useState<string>('ALL');
   const [search, setSearch] = useState('');
 
-  const { data: boq, isLoading } = useQuery({
+  const { data: boq, isLoading } = useQuery<BOQResponse>({
     queryKey: ['boq', projectId],
     queryFn: () => boqApi.getBOQ(projectId!),
     enabled: !!projectId,
-    onSuccess: (data: any) => setBOQItems(data.items ?? []),
+    onSuccess: (data: BOQResponse) => setBOQItems(data.items ?? []),
   } as any);
 
   const items: any[] = boq?.items ?? [];
