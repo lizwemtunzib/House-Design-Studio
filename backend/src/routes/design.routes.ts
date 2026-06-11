@@ -34,7 +34,7 @@ const intentSchema = z.object({
   targetArea: z.number().positive().optional(),
   plotSize: z.number().positive().optional(),
   style: z.enum(['MODERN', 'CONTEMPORARY', 'LUXURY', 'MINIMALIST', 'AFRICAN_VERNACULAR', 'MEDITERRANEAN', 'TIMBER_HEAVY', 'GLASS_HEAVY', 'PREFAB_MODULAR']).optional(),
-  wallSystem: z.string().optional(),
+  wallSystem: z.enum(['BRICK_MASONRY', 'CONCRETE_BLOCK', 'INTERLOCKING_BLOCK', 'MAKIGA_SOIL_BLOCK', 'TIMBER_FRAME', 'LIGHT_STEEL_FRAME', 'GLASS_CURTAIN_WALL', 'PRECAST_PANEL', 'SIP_PANEL']).optional(),
   hasPool: z.boolean().default(false),
   hasGarden: z.boolean().default(true),
   hasDriveway: z.boolean().default(false),

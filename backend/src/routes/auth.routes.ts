@@ -95,6 +95,6 @@ authRouter.patch('/me', authenticate, async (req: AuthRequest, res: Response) =>
 
 function signToken(userId: string, email: string, role: string, subscriptionTier: string) {
   return jwt.sign({ userId, email, role, subscriptionTier }, config.jwt.secret, {
-    expiresIn: config.jwt.expiresIn as string & {},
+    expiresIn: config.jwt.expiresIn as jwt.SignOptions["expiresIn"],
   });
 }
