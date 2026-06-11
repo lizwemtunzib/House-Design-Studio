@@ -1,16 +1,9 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { useDesignStore } from '../../stores/design.store';
+import { useDesignStore, BOQItem } from '../../stores/design.store';
 import { boqApi } from '../../services/api.service';
 import { BOQTable } from '../../components/BOQTable';
-
-interface BOQItem {
-  category: string;
-  description: string;
-  subCategory?: string;
-  [key: string]: unknown;
-}
 
 interface BOQResponse {
   items?: BOQItem[];
@@ -103,7 +96,7 @@ export default function Step4BOQ() {
       </div>
 
       {/* Warnings */}
-      {boq.warnings?.length > 0 && (
+      {(boq.warnings?.length ?? 0) > 0 && (
         <div className="space-y-1.5">
           {boq.warnings.map((w: string, i: number) => (
             <div key={i} className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-lg p-3">
@@ -118,7 +111,7 @@ export default function Step4BOQ() {
       <BOQTable groupedItems={groupedItems} categoryIcons={CATEGORY_ICONS} />
 
       {/* Assumptions */}
-      {boq.assumptions?.length > 0 && (
+      {(boq.assumptions?.length ?? 0) > 0 && (
         <div className="card p-4">
           <p className="text-xs font-semibold text-gray-600 mb-2">Calculation Assumptions</p>
           <ul className="space-y-1">
