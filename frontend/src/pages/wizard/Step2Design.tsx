@@ -123,7 +123,7 @@ export default function Step2Design() {
           </div>
           {currentImages.length > 1 && (
             <div className="flex gap-2 mt-2 overflow-x-auto scroll-hidden pb-1">
-              {currentImages.map((url, i) => (
+              {currentImages.map((url: string, i: number) => (
                 <button key={i} onClick={() => setSelectedIndex(i)} className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${selectedIndex === i ? 'border-brand-800' : 'border-transparent'}`}>
                   <img src={url} alt="" className="w-full h-full object-cover" />
                 </button>
