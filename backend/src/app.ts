@@ -19,7 +19,24 @@ export function createApp() {
 
   // CORS
   app.use(cors({
-    origin: [config.frontendUrl, 'http://localhost:5173', 'http://localhost:4173'],
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        config.frontendUrl,
+        'http://localhost:5173',
+        'http://localhost:4173',
+      ].filter(Boolean);
+
+      console.log(`[CORS] Incoming origin: ${origin ?? '(no origin)'}`);
+      console.log(`[CORS] Allowed origins: ${allowedOrigins.join(', ')}`);
+
+      if (!origin || allowedOrigins.includes(origin)) {
+        console.log(`[CORS] Origin allowed: ${origin ?? '(no origin)'}`);
+        callback(null, true);
+      } else {
+        console.warn(`[CORS] Origin blocked: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
