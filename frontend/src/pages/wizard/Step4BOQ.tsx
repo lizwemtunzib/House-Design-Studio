@@ -98,7 +98,7 @@ export default function Step4BOQ() {
       {/* Warnings */}
       {(boq.warnings?.length ?? 0) > 0 && (
         <div className="space-y-1.5">
-          {boq.warnings.map((w: string, i: number) => (
+          {boq.warnings?.map((w: string, i: number) => (
             <div key={i} className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-lg p-3">
               <span className="text-red-500 text-sm flex-shrink-0">⚠</span>
               <p className="text-xs text-red-700">{w}</p>
@@ -115,7 +115,7 @@ export default function Step4BOQ() {
         <div className="card p-4">
           <p className="text-xs font-semibold text-gray-600 mb-2">Calculation Assumptions</p>
           <ul className="space-y-1">
-            {boq.assumptions.map((a: string, i: number) => (
+            {boq.assumptions?.map((a: string, i: number) => (
               <li key={i} className="text-xs text-gray-500 flex items-start gap-1.5"><span>•</span>{a}</li>
             ))}
           </ul>
